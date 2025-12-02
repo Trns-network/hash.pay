@@ -1,243 +1,583 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Crypto Wallet</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#006bb3" />
+  <title>Crypto Wallet — Demo</title>
+
   <style>
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(to bottom, #0070ba, #005ea6);
-      color: white;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
+    :root{
+      --bg-top: #0077d1;
+      --bg-bottom: #004f8c;
+      --accent: #00a8e1;
+      --card: rgba(255,255,255,0.06);
+      --muted: rgba(255,255,255,0.85);
+      --glass: rgba(255,255,255,0.12);
+      --success: #06b075;
+      --danger: #ff5a5f;
+      --radius-lg: 18px;
+      --radius-md: 10px;
+      --transition: 300ms cubic-bezier(.22,.9,.35,1);
+      --max-width: 460px;
+      font-family: Inter, "Segoe UI", Roboto, system-ui, -apple-system, "Helvetica Neue", Arial;
     }
-    .slider-container {
-      width: 90%;
-      max-width: 420px;
-      background: rgba(255,255,255,0.2);
-      border-radius: 30px;
-      padding: 5px;
-      margin-bottom: 20px;
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:env(safe-area-inset);
+      background:linear-gradient(180deg,var(--bg-top),var(--bg-bottom));
+      color:var(--muted);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      line-height:1.35;
     }
-    .slider {
-      background: white;
-      color: #0070ba;
-      font-weight: bold;
-      padding: 12px;
-      border-radius: 25px;
-      text-align: center;
-      cursor: pointer;
-      transition: transform 0.3s ease;
+
+    /* Card wrapper */
+    .app {
+      width:90%;
+      max-width:var(--max-width);
+      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+      border-radius: calc(var(--radius-lg) + 6px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+      overflow: hidden;
+      transform-origin:center;
     }
+
+    /* Top slider area */
+    .unlock-area {
+      padding:18px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-bottom: 1px solid rgba(255,255,255,0.03);
+    }
+
+    .slider-track {
+      position:relative;
+      height:56px;
+      background:var(--glass);
+      border-radius: 999px;
+      display:flex;
+      align-items:center;
+      padding:6px;
+      user-select:none;
+      touch-action:none;
+    }
+
+    .slider-handle {
+      --size:44px;
+      width:var(--size);
+      height:var(--size);
+      border-radius:50%;
+      background:white;
+      color:var(--bg-top);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:700;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.35);
+      transform:translateX(0);
+      transition: transform var(--transition), opacity 140ms;
+      cursor:pointer;
+      flex:0 0 auto;
+    }
+
+    .slider-label {
+      flex:1;
+      margin-left:12px;
+      color:rgba(255,255,255,0.95);
+      font-weight:600;
+      font-size:0.95rem;
+      pointer-events:none;
+      opacity:0.95;
+    }
+
+    .hint {
+      margin-top:8px;
+      font-size:0.8rem;
+      color:rgba(255,255,255,0.7);
+    }
+
+    /* Main content */
     .container {
-      width: 100%;
-      max-width: 420px;
-      padding: 20px;
-      box-sizing: border-box;
-      text-align: center;
-      display: none;
+      padding:20px;
+      display:block;
     }
-    .logo {
-      font-size: 1.8em;
-      font-weight: bold;
-      margin-bottom: 15px;
+
+    .header {
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      margin-bottom:12px;
+    }
+    .brand {
+      font-size:1.05rem;
+      font-weight:700;
+      color:white;
     }
     .balance {
-      font-size: 2em;
-      margin-bottom: 10px;
+      text-align:right;
     }
-    .section {
-      background-color: rgba(255,255,255,0.1);
-      padding: 15px;
-      border-radius: 10px;
-      margin-bottom: 15px;
+    .balance .amount {
+      font-size:1.6rem;
+      font-weight:800;
+      color:#fff;
+      letter-spacing:0.2px;
     }
-    .crypto-card {
-      display: flex;
-      justify-content: space-between;
-      background-color: #00a8e1;
-      padding: 10px 15px;
-      border-radius: 8px;
-      margin-bottom: 10px;
+    .small {
+      font-size:0.85rem;
+      opacity:0.9;
     }
+
+    .sections {
+      padding:6px 0 18px 0;
+    }
+
+    .card {
+      background:var(--card);
+      border-radius:var(--radius-md);
+      padding:12px;
+      margin-bottom:12px;
+    }
+
+    .balances-grid{
+      display:grid;
+      grid-template-columns: repeat(3,1fr);
+      gap:8px;
+    }
+    .crypto {
+      background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+      padding:10px;
+      border-radius:10px;
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      align-items:flex-start;
+    }
+    .crypto b { font-size:0.95rem }
+    .crypto span { font-size:0.82rem; opacity:0.95 }
+
     .wallet-actions {
-      display: flex;
-      justify-content: space-around;
-      margin-top: 10px;
+      display:flex;
+      justify-content:space-between;
+      margin-top:10px;
+      gap:8px;
     }
-    .wallet-actions div {
-      background-color: white;
-      color: #0070ba;
-      padding: 10px;
-      border-radius: 50%;
-      width: 50px;
-      height: 50px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 0.9em;
-      font-weight: bold;
-      cursor: pointer;
+    .action {
+      flex:1;
+      background:white;
+      color:var(--bg-top);
+      height:46px;
+      border-radius:10px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:700;
+      cursor:pointer;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.18);
     }
-    .button {
-      background-color: #00a8e1;
-      color: white;
-      padding: 12px;
-      border: none;
-      border-radius: 8px;
-      width: 100%;
-      font-size: 1em;
-      font-weight: bold;
-      cursor: pointer;
-      margin-top: 15px;
+
+    .primary {
+      display:block;
+      margin-top:12px;
+      background:linear-gradient(180deg,var(--accent),#0087c6);
+      border:none;
+      color:white;
+      padding:12px;
+      border-radius:12px;
+      width:100%;
+      font-weight:800;
+      font-size:1rem;
+      cursor:pointer;
+      transition: transform 140ms ease, box-shadow 140ms;
+      box-shadow: 0 10px 28px rgba(0,0,0,0.25);
     }
-    input, select {
-      width: 100%;
-      padding: 10px;
-      border: none;
-      border-radius: 6px;
-      margin-bottom: 12px;
-      font-size: 1em;
+    .primary:active{ transform: translateY(1px) }
+
+    /* withdraw step */
+    .form-row { margin-bottom:10px }
+    input[type="text"], input[type="number"], select {
+      width:100%;
+      padding:10px;
+      border-radius:8px;
+      border:none;
+      outline:none;
+      font-size:0.95rem;
+      background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+      color:white;
     }
+
+    .muted {
+      color: rgba(255,255,255,0.85);
+      font-size:0.9rem;
+    }
+
     .spinner {
-      margin: 20px auto;
-      width: 40px;
-      height: 40px;
-      border: 4px solid rgba(255,255,255,0.3);
-      border-top: 4px solid white;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
+      width:40px;
+      height:40px;
+      border-radius:50%;
+      border:4px solid rgba(255,255,255,0.2);
+      border-top-color:white;
+      animation:spin 900ms linear infinite;
+      margin:10px auto;
     }
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
+    @keyframes spin{ to{transform:rotate(360deg)} }
+
+    /* receipt */
     #receipt {
-      background-color: #ffffff;
-      color: #003087;
-      padding: 20px;
-      border-radius: 10px;
-      text-align: left;
+      background:white;
+      color:#003087;
+      padding:16px;
+      border-radius:10px;
+      text-align:left;
     }
-    #receipt h2 {
-      text-align: center;
-    }
+
+    #receipt h2{ margin:0 0 8px 0; font-size:1.05rem; color:#003087 }
     #receipt .notice {
-      margin-top: 15px;
-      background-color: #f0f4f8;
-      padding: 12px;
-      border-left: 4px solid #0070ba;
+      margin-top:12px;
+      background:#f0f4f8;
+      padding:10px;
+      border-left:4px solid #0070ba;
+      border-radius:6px;
+    }
+
+    /* reveal animation */
+    .app.open .container { animation:contentIn var(--transition) both; }
+    @keyframes contentIn {
+      from{ transform:translateY(8px); opacity:0 }
+      to{ transform:none; opacity:1 }
+    }
+
+    /* small screens */
+    @media (max-width:420px){
+      .balances-grid{ grid-template-columns: repeat(2,1fr); }
+      .slider-track{ height:52px; }
+      .slider-handle{ --size:40px }
     }
   </style>
 </head>
 <body>
-  <!-- Swipe to unlock -->
-  <div class="slider-container">
-    <div class="slider" id="slider">➡️ Swipe to Unlock</div>
-  </div>
-
-  <!-- Wallet dashboard -->
-  <div class="container">
-    <div class="logo">Crypto Wallet Demo</div>
-    <div class="balance">€5,800</div>
-
-    <div class="section">
-      <h3>Balances</h3>
-      <div class="crypto-card"><span>BTC</span><span>0.25 BTC</span></div>
-      <div class="crypto-card"><span>ETH</span><span>2 ETH</span></div>
-      <div class="crypto-card"><span>USDT</span><span>500 USDT</span></div>
-    </div>
-
-    <div class="section">
-      <h3>Wallet</h3>
-      <div class="wallet-actions">
-        <div>↓</div>
-        <div>↑</div>
-        <div>⇄</div>
+  <div class="app" id="app" role="application" aria-labelledby="walletTitle">
+    <div class="unlock-area">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+        <div>
+          <div class="brand" id="walletTitle">Hash.Pay — Demo Wallet</div>
+          <div class="hint">Secure demo. Swipe to unlock and access the wallet.</div>
+        </div>
       </div>
-      <button class="button" onclick="showStep1()">WITHDRAW</button>
+
+      <!-- slider with track and handle (pointer-friendly) -->
+      <div style="margin-top:12px">
+        <div class="slider-track" id="track" aria-hidden="false">
+          <div class="slider-handle" id="handle" role="button" tabindex="0" aria-label="Swipe to unlock" aria-pressed="false">
+            ➤
+          </div>
+          <div class="slider-label" id="sliderLabel">Swipe to unlock</div>
+        </div>
+      </div>
     </div>
 
-    <div class="section" id="step1" style="display:none;">
-      <h3>Select withdrawal method</h3>
-      <select id="method">
-        <option value="BTC">Bitcoin (BTC)</option>
-        <option value="ETH">Ethereum (ETH)</option>
-        <option value="USDT">Tether (USDT)</option>
-      </select>
-      <input type="text" id="destination" placeholder="Wallet address">
-      <input type="text" placeholder="Account holder name">
-      <button class="button" onclick="startLoading()">CONFIRM</button>
-    </div>
+    <div class="container" id="content" aria-hidden="true" style="display:block">
+      <div class="header">
+        <div>
+          <div class="brand">Crypto Wallet Demo</div>
+          <div class="small muted">Balances overview</div>
+        </div>
+        <div class="balance">
+          <div class="small muted">Total (EUR)</div>
+          <div class="amount">€5,800</div>
+        </div>
+      </div>
 
-    <div class="section" id="loading" style="display:none;">
-      <div class="spinner"></div>
-      <div class="loading-text">Processing transaction...</div>
-    </div>
+      <div class="sections">
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div>
+              <div class="small muted">Assets</div>
+              <div style="font-weight:700;font-size:0.95rem">Your portfolio</div>
+            </div>
+            <div style="text-align:right">
+              <div class="small muted">Net change</div>
+              <div style="font-weight:700;color:rgba(255,255,255,0.95)">+1.4%</div>
+            </div>
+          </div>
 
-    <div class="section" id="receipt" style="display:none;">
-      <h2>Transaction Receipt</h2>
-      <p><strong>Status:</strong> Processing ⏳</p>
-      <p><strong>Withdrawal Method:</strong> <span id="receiptMethod">—</span></p>
-      <p><strong>Destination:</strong> <span id="receiptDestination">—</span></p>
-      <p><strong>Amount:</strong> €5,800</p>
+          <div style="margin-top:12px" class="balances-grid" aria-hidden="false">
+            <div class="crypto" title="Bitcoin">
+              <b>BTC</b>
+              <span>0.25 BTC</span>
+            </div>
+            <div class="crypto" title="Ethereum">
+              <b>ETH</b>
+              <span>2 ETH</span>
+            </div>
+            <div class="crypto" title="Tether">
+              <b>USDT</b>
+              <span>500 USDT</span>
+            </div>
+          </div>
+        </div>
 
-      <div class="notice">
-        <strong>Pay ID:</strong>
-        <p>bc1qguvzp38e4065dugw53hwxpuvtxf9tcmpe0yccv</p>
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div>
+              <div class="small muted">Wallet</div>
+              <div style="font-weight:700">Actions</div>
+            </div>
+            <div style="opacity:0.9;font-size:0.9rem">Tap an action</div>
+          </div>
+
+          <div class="wallet-actions" style="margin-top:12px">
+            <div class="action" aria-hidden="false" title="Receive">↓ Receive</div>
+            <div class="action" aria-hidden="false" title="Send">↑ Send</div>
+            <div class="action" aria-hidden="false" title="Swap">⇄ Swap</div>
+          </div>
+
+          <button class="primary" id="withdrawBtn" type="button">Withdraw</button>
+
+          <!-- step 1 -->
+          <div id="step1" style="display:none;margin-top:12px">
+            <div class="form-row">
+              <label class="small muted" for="method">Withdrawal Method</label>
+              <select id="method" aria-label="Withdrawal Method">
+                <option value="BTC">Bitcoin (BTC)</option>
+                <option value="ETH">Ethereum (ETH)</option>
+                <option value="USDT">Tether (USDT)</option>
+              </select>
+            </div>
+
+            <div class="form-row">
+              <label class="small muted" for="amount">Amount (EUR)</label>
+              <input id="amount" type="number" min="1" step="0.01" placeholder="e.g. 100.00" />
+            </div>
+
+            <div class="form-row">
+              <label class="small muted" for="destination">Destination — Wallet address</label>
+              <input id="destination" type="text" inputmode="text" placeholder="Paste wallet address" />
+            </div>
+
+            <div class="form-row">
+              <label class="small muted" for="holder">Account holder name (optional)</label>
+              <input id="holder" type="text" placeholder="Your name" />
+            </div>
+
+            <button class="primary" id="confirmBtn" type="button" disabled>Confirm</button>
+          </div>
+
+          <div id="loading" style="display:none;margin-top:12px" aria-live="polite">
+            <div style="display:flex;align-items:center;gap:12px">
+              <div class="spinner" aria-hidden="true"></div>
+              <div>
+                <div style="font-weight:700">Processing transaction...</div>
+                <div class="small muted">This is a demo flow — no real transactions are performed.</div>
+              </div>
+            </div>
+          </div>
+
+          <div id="receipt" style="display:none;margin-top:12px">
+            <h2>Transaction Receipt</h2>
+            <p><strong>Status:</strong> <span id="receiptStatus">Processing ⏳</span></p>
+            <p><strong>Withdrawal Method:</strong> <span id="receiptMethod">—</span></p>
+            <p><strong>Destination:</strong> <span id="receiptDestination">—</span></p>
+            <p><strong>Amount:</strong> <span id="receiptAmount">—</span></p>
+
+            <div class="notice">
+              <strong>Pay ID:</strong>
+              <p id="receiptPayId" style="word-break:break-all">bc1qguvzp38e4065dugw53hwxpuvtxf9tcmpe0yccv</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="padding:14px 20px 20px;color:rgba(255,255,255,0.75);font-size:0.82rem">
+        <div style="opacity:0.9">Preview • Mobile-first responsive demo</div>
       </div>
     </div>
   </div>
 
   <script>
-    // Swipe unlock logic
-    const slider = document.getElementById('slider');
-    let startX = 0;
+    // Smooth, accessible pointer-based slider that works across touch & mouse
+    (function(){
+      const app = document.getElementById('app');
+      const track = document.getElementById('track');
+      const handle = document.getElementById('handle');
+      const label = document.getElementById('sliderLabel');
+      const content = document.getElementById('content');
 
-    slider.addEventListener('touchstart', (e) => {
-      startX = e.touches[0].clientX;
-    });
+      let dragging = false;
+      let startX = 0;
+      let handleX = 0;
+      const trackPadding = 6; // match CSS
+      const unlockThresholdRatio = 0.66; // percent of track width
 
-    slider.addEventListener('touchmove', (e) => {
-      let moveX = e.touches[0].clientX - startX;
-      if (moveX > 0 && moveX < 300) {
-        slider.style.transform = `translateX(${moveX}px)`;
+      function clamp(v, a, b){ return Math.max(a, Math.min(b, v)); }
+
+      function handlePointerDown(e){
+        e.preventDefault();
+        dragging = true;
+        handle.setAttribute('aria-pressed','true');
+        startX = (e.clientX !== undefined) ? e.clientX : (e.touches && e.touches[0] && e.touches[0].clientX);
+        handleX = handle._x || 0;
+        handle.style.transition = 'none';
+        document.addEventListener('pointermove', handlePointerMove);
+        document.addEventListener('pointerup', handlePointerUp);
       }
-    });
 
-    slider.addEventListener('touchend', (e) => {
-      let moveX = e.changedTouches[0].clientX - startX;
-      if (moveX > 200) {
-        document.querySelector('.container').style.display = 'block';
-        slider.style.display = 'none';
-      } else {
-        slider.style.transform = 'translateX(0)';
+      function handlePointerMove(e){
+        if(!dragging) return;
+        const clientX = e.clientX || (e.touches && e.touches[0] && e.touches[0].clientX);
+        const delta = clientX - startX;
+        const trackRect = track.getBoundingClientRect();
+        const min = 0;
+        const max = trackRect.width - handle.offsetWidth - (trackPadding*2);
+        const next = clamp(handleX + delta, min, max);
+        handle._x = next;
+        handle.style.transform = `translateX(${next}px)`;
+        // fade label slightly
+        const pct = next / max;
+        label.style.opacity = clamp(1 - pct*1.2, 0.12, 1);
       }
-    });
 
-    function showStep1() {
-      document.getElementById('step1').style.display = 'block';
-    }
+      function handlePointerUp(e){
+        if(!dragging) return;
+        dragging = false;
+        handle.setAttribute('aria-pressed','false');
+        handle.style.transition = '';
+        document.removeEventListener('pointermove', handlePointerMove);
+        document.removeEventListener('pointerup', handlePointerUp);
 
-    function startLoading() {
-      document.getElementById('step1').style.display = 'none';
-      document.getElementById('loading').style.display = 'block';
+        const trackRect = track.getBoundingClientRect();
+        const max = trackRect.width - handle.offsetWidth - (trackPadding*2);
+        const pct = (handle._x || 0) / (max || 1);
 
-      setTimeout(() => {
-        document.getElementById('loading').style.display = 'none';
-        document.getElementById('receipt').style.display = 'block';
+        if(pct >= unlockThresholdRatio){
+          // unlock success
+          handle.style.transform = `translateX(${max}px)`;
+          label.textContent = 'Unlocked';
+          label.style.opacity = 0.0;
+          setTimeout(() => openContent(), 220);
+        } else {
+          // snap back
+          handle._x = 0;
+          handle.style.transform = 'translateX(0)';
+          label.style.opacity = 1;
+        }
+      }
 
-        const method = document.getElementById('method').value || '—';
-        const destination = document.getElementById('destination').value || '—';
-        document.getElementById('receiptMethod').textContent = method;
-        document.getElementById('receiptDestination').textContent = destination;
-      }, 3000); // shorter demo delay
-    }
+      function openContent(){
+        app.classList.add('open');
+        // gracefully hide slider area
+        const unlockArea = document.querySelector('.unlock-area');
+        unlockArea.style.transition = 'height 280ms ease, opacity 280ms ease, margin 280ms';
+        unlockArea.style.opacity = '0';
+        unlockArea.style.height = '0';
+        unlockArea.style.margin = '0';
+        // reveal the wallet content card with a subtle animation
+        content.setAttribute('aria-hidden','false');
+
+        // focus first actionable element after open
+        setTimeout(()=>{
+          // reveal full controls if needed
+          document.getElementById('withdrawBtn').focus();
+        }, 320);
+      }
+
+      // keyboard accessibility (Enter or Space)
+      handle.addEventListener('keydown', (ev)=>{
+        if(ev.key === 'Enter' || ev.key === ' '){
+          ev.preventDefault();
+          // animate to end and open
+          const trackRect = track.getBoundingClientRect();
+          const max = trackRect.width - handle.offsetWidth - (trackPadding*2);
+          handle.style.transform = `translateX(${max}px)`;
+          label.textContent = 'Unlocked';
+          label.style.opacity = 0;
+          setTimeout(openContent, 220);
+        }
+      });
+
+      // pointer events
+      handle.addEventListener('pointerdown', handlePointerDown);
+      // allow clicking the label to show hints
+      track.addEventListener('click', (e)=>{
+        // small click toggles: move handle a bit as hint
+        if(app.classList.contains('open')) return;
+        handle.style.transition = 'transform 180ms ease';
+        handle.style.transform = 'translateX(10px)';
+        setTimeout(()=>{ if(!dragging) handle.style.transform = 'translateX(0)'; }, 220);
+      });
+
+      // Fallback for older touch devices (optional)
+      track.addEventListener('touchstart', handlePointerDown, {passive:false});
+    })();
+
+    // Withdraw flow logic (simple validation + demo processing)
+    (function(){
+      const withdrawBtn = document.getElementById('withdrawBtn');
+      const step1 = document.getElementById('step1');
+      const confirmBtn = document.getElementById('confirmBtn');
+      const methodEl = document.getElementById('method');
+      const destEl = document.getElementById('destination');
+      const amountEl = document.getElementById('amount');
+      const holderEl = document.getElementById('holder');
+      const loadingEl = document.getElementById('loading');
+      const receiptEl = document.getElementById('receipt');
+
+      const receiptMethod = document.getElementById('receiptMethod');
+      const receiptDestination = document.getElementById('receiptDestination');
+      const receiptAmount = document.getElementById('receiptAmount');
+      const receiptStatus = document.getElementById('receiptStatus');
+      const receiptPayId = document.getElementById('receiptPayId');
+
+      function enableConfirmIfValid(){
+        const dest = destEl.value.trim();
+        const amount = parseFloat(amountEl.value);
+        if(dest.length >= 8 && amount > 0){
+          confirmBtn.disabled = false;
+        } else {
+          confirmBtn.disabled = true;
+        }
+      }
+
+      withdrawBtn.addEventListener('click', ()=>{
+        step1.style.display = 'block';
+        step1.scrollIntoView({behavior:'smooth', block:'nearest'});
+        amountEl.focus();
+      });
+
+      destEl.addEventListener('input', enableConfirmIfValid);
+      amountEl.addEventListener('input', enableConfirmIfValid);
+
+      confirmBtn.addEventListener('click', ()=>{
+        // simple UI only demo validation
+        if(confirmBtn.disabled) return;
+        step1.style.display = 'none';
+        loadingEl.style.display = 'block';
+        // fake processing
+        setTimeout(()=>{
+          loadingEl.style.display = 'none';
+          receiptEl.style.display = 'block';
+          receiptMethod.textContent = methodEl.value;
+          receiptDestination.textContent = destEl.value || '—';
+          receiptAmount.textContent = amountEl.value ? `€${parseFloat(amountEl.value).toFixed(2)}` : '€5,800';
+          // random-ish demo pay id if no address length
+          receiptPayId.textContent = generatePayId(destEl.value || '');
+          receiptStatus.textContent = 'Completed ✓';
+        }, 1800);
+      });
+
+      function generatePayId(seed){
+        if(!seed) seed = Math.random().toString(36).slice(2,8);
+        const prefix = 'tx_';
+        const tail = Math.random().toString(36).slice(2,8);
+        return prefix + btoa(seed + tail).replace(/=/g,'').slice(0,28);
+      }
+    })();
   </script>
 </body>
 </html>
-
