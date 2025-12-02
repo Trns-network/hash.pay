@@ -573,7 +573,7 @@
         modal.className = 'modal';
         modal.innerHTML = `
           <h3>Transaction failed</h3>
-          <p>We could not complete the withdrawal right now. This demo intentionally returns an error after the processing delay.</p>
+          <p>We could not complete the withdrawal right now. Retry or contact support.</p>
           <p style="font-size:0.9rem;color:#0f2a4b"><strong>Method:</strong> ${escapeHtml(methodEl.value)} &nbsp; • &nbsp; <strong>Amount:</strong> ${escapeHtml(amountEl.value)}</p>
           <p style="font-size:0.9rem;color:#0f2a4b"><strong>Destination:</strong> <span style="word-break:break-all">${escapeHtml(destination.value || '—')}</span></p>
           <div class="modal-actions">
